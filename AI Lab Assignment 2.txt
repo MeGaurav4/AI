@@ -1,0 +1,138 @@
+# **AI Lab – Assignment 2**
+
+## **Implement a Constraint Satisfaction Problem (CSP) – Australia Map Coloring**
+
+---
+
+# **1. Theory (Simple & Direct)**
+
+### **What is a CSP?**
+
+A **Constraint Satisfaction Problem** is defined by:
+
+* **Variables** → things we want to assign
+* **Domains** → possible values
+* **Constraints** → rules limiting which combinations are allowed
+
+Goal: *Assign values to all variables such that all constraints are satisfied.*
+
+### **Example Here: Map Coloring**
+
+* Variables = Regions of Australia
+  `{WA, NT, SA, Q, NSW, V, T}`
+* Domain = `{Red, Green, Blue}`
+* Constraint = Adjacent regions must have **different colors**
+
+This is basically: *“Don’t give two neighbors the same paint bucket.”*
+
+### **Algorithms Used in Your Code**
+
+* **Backtracking Search**
+* **MRV (Minimum Remaining Values)** — pick the variable with the smallest domain next
+* **Forward Checking** — prune values from neighbors when one variable is assigned
+* **Constraint Checking** — here: `color1 != color2`
+
+---
+
+# **2. Pseudocode (Short + Clear)**
+
+### **Backtracking CSP Solver**
+
+```
+function backtrack():
+    if all variables assigned:
+        return success
+
+    var = select variable with smallest domain (MRV)
+
+    for value in domain[var]:
+        if consistent(var, value):
+            assign var = value
+            if forward_check(var, value):
+                if backtrack(): return success
+            undo assignment + restore domains
+    return failure
+```
+
+### **Forward Checking**
+
+```
+forward_check(var, value):
+    for each neighbor:
+        remove values from neighbor domain that violate constraint
+        if domain becomes empty: restore and fail
+    record pruned values
+    return success
+```
+
+---
+
+# **3. Real-Life Analogy**
+
+Imagine painting rooms in a house where **shared walls mean forbidden twins** — two rooms sharing a wall cannot both be Blue, or you’ll trigger your inner film production designer’s rage.
+
+Forward checking is like checking:
+“If I paint *this* room blue, will the neighbors still have options left?”
+If not, abort mission.
+
+---
+
+# **5. Test Cases**
+
+### **Test Case 1**
+
+Input: Australia map as in code
+Expected output:
+A valid color assignment, e.g.:
+
+```
+WA = Red
+NT = Green
+SA = Blue
+Q = Red
+NSW = Green
+V = Red
+T = Blue
+```
+
+### **Test Case 2 (Modify Domains)**
+
+Try:
+
+```
+Domain = {"Red", "Green"}
+```
+
+Expected:
+May still solve but could fail depending on constraints.
+
+### **Test Case 3 (Add extra constraint)**
+
+Add `"WA", "Q"`.
+Expected:
+Solver should still find a valid assignment or report failure.
+
+---
+
+# **6. Optional Viva Questions**
+
+### **Q1: What is Forward Checking?**
+
+A pruning method that removes incompatible values from neighbors after assignment.
+
+### **Q2: Why use MRV?**
+
+Because picking the variable with the smallest domain reduces early failure.
+
+### **Q3: Are CSPs complete?**
+
+Backtracking with forward checking is complete — it will find a solution if one exists.
+
+### **Q4: Why use domains of size 3?**
+
+Classic map-coloring theorem: **Four colors suffice**, but three usually work for Australia.
+
+### **Q5: What happens if domains empty out?**
+
+Failure → backtrack → restore the pruned values.
+

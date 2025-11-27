@@ -1,0 +1,283 @@
+# **AI Lab – Assignment 3**
+
+## **Parsing a Family Tree Using a Knowledge Base (Prolog-style)**
+
+---
+
+# **1. Theory (Short, Clear, Human)**
+
+This assignment simulates a **Prolog-style knowledge base** for family relations.
+
+You define facts like:
+
+```
+parent(rajesh, amit)
+parent(amit, rahul)
+```
+
+Then build logic rules to infer relationships such as:
+
+* **Parent**
+* **Sibling**
+* **Ancestor**
+* **Grandparent**
+
+The idea is simple but powerful:
+Represent the family as a **graph**, then answer queries by graph traversal.
+
+### **Key Concepts Behind the Program**
+
+1. **Knowledge Base (KB)**
+   Stores relationships:
+   `parent → [children...]`
+
+2. **Reverse KB**
+   Useful for queries like siblings
+   `child → [parents...]`
+
+3. **Rules implemented using graph logic**
+
+   * **Parent:** direct edge
+   * **Sibling:** share at least one parent
+   * **Ancestor:** DFS through children
+   * **Grandparent:** parent of a parent
+
+This mimics what Prolog does, but in C++.
+
+---
+
+# **2. Pseudocode (Simple & Exam-Friendly)**
+
+### **Add Fact**
+
+```
+add_fact(parent, child):
+    KB[parent].append(child)
+```
+
+### **Build Reverse Map**
+
+```
+for each parent in KB:
+    for each child:
+        reverseKB[child].append(parent)
+```
+
+### **Check Parent**
+
+```
+is_parent(a, b):
+    return b ∈ children of a
+```
+
+### **Check Sibling**
+
+```
+is_sibling(a, b):
+    if a == b: return false
+    for each parent P of a:
+        if P is also parent of b: return true
+    return false
+```
+
+### **Check Ancestor**
+
+```
+is_ancestor(a, b):
+    stack.push(a)
+    while stack not empty:
+        current = stack.pop()
+        for each child of current:
+            if child == b: return true
+            push child into stack
+    return false
+```
+
+### **Check Grandparent**
+
+```
+is_grandparent(a, b):
+    for each child mid of a:
+        if is_parent(mid, b): return true
+    return false
+```
+
+### **Query Loop**
+
+```
+repeat:
+    read command
+    if parent A B: call is_parent(A,B)
+    if sibling A B: call is_sibling(A,B)
+    if ancestor A B: call is_ancestor(A,B)
+    if grandparent A B: call is_grandparent(A,B)
+until exit
+```
+
+---
+
+# **3. Real-Life Analogy / Case Study**
+
+Think of a family WhatsApp group where you’re trying to figure out:
+
+* Who is whose uncle
+* Who is the grandparent
+* Who belongs to which branch of the family tree
+
+Instead of asking relatives (who will definitely give contradictory answers), you use logic:
+
+* **Sibling:** If they share the same parents in the group photos
+* **Ancestor:** Someone whose old photos keep showing up before everyone else
+* **Grandparent:** The person who always sends you “Good Morning” messages at 6 AM
+
+This program basically automates that detective work.
+
+---
+
+# **4. Example Queries & Expected Outputs**
+
+Given the family tree (like in your code):
+
+```
+rajesh → amit, priya
+sunita → amit, priya
+amit → rahul, sneha
+priya → kiran, arjun
+rahul → meera
+```
+
+---
+
+# **5. Test Cases**
+
+### **Test Case 1: Parent**
+
+**Input:**
+
+```
+parent rajesh amit
+```
+
+**Expected:**
+
+```
+Yes
+```
+
+### **Test Case 2: Sibling**
+
+**Input:**
+
+```
+sibling amit priya
+```
+
+**Expected:**
+
+```
+Yes
+```
+
+Because they share parents **rajesh** and **sunita**.
+
+---
+
+### **Test Case 3: Ancestor**
+
+**Input:**
+
+```
+ancestor rajesh meera
+```
+
+**Reason:**
+rajesh → amit → rahul → meera
+
+**Expected:**
+
+```
+Yes
+```
+
+---
+
+### **Test Case 4: Grandparent**
+
+**Input:**
+
+```
+grandparent amit meera
+```
+
+**Expected:**
+
+```
+Yes
+```
+
+---
+
+### **Test Case 5: Not related**
+
+**Input:**
+
+```
+sibling rahul kiran
+```
+
+**Expected:**
+
+```
+No
+```
+
+---
+
+### **Test Case 6: Edge Case (Self-check)**
+
+**Input:**
+
+```
+ancestor rahul rahul
+```
+
+**Expected:**
+
+```
+No
+```
+
+(Program ensures no self-ancestor loops)
+
+---
+
+# **6. Optional Viva Q&A**
+
+### **Q1: Why do we need a reverse KB?**
+
+To quickly find parents of a child.
+Essential for sibling and ancestor queries.
+
+### **Q2: Why use DFS for ancestor?**
+
+Because ancestor means “any depth,” and DFS naturally explores deeper generations.
+
+### **Q3: What kind of data structure is the family tree?**
+
+A **directed acyclic graph (DAG)** where edges go from parent → child.
+
+### **Q4: Can there be multiple parents?**
+
+Yes. The reverse KB supports multiple parents (useful in general knowledge bases).
+
+### **Q5: Difference between ancestor and parent?**
+
+* Parent → direct relation
+* Ancestor → indirect, multi-level relation
+
+### **Q6: Is this forward-chaining or backward-chaining?**
+
+This is explicit querying + graph traversal; not classic inference.
+Closest to **goal-directed backward checking**.
+
+---

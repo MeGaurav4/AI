@@ -1,0 +1,273 @@
+# **AI Lab – Assignment 7**
+
+## **Implement Forward Chaining Algorithm**
+
+---
+
+# **1. Theory (Crisp & Simple)**
+
+Forward chaining is a **data-driven inference technique** used in rule-based expert systems.
+
+### **How it works:**
+
+1. Start with a set of **known facts**.
+2. Look for rules where **all conditions are satisfied**.
+3. Infer new facts (add conclusions).
+4. Repeat until **no new facts** can be derived.
+
+This is essentially:
+**IF conditions ⟶ THEN conclusion → add conclusion to facts → repeat.**
+
+### **Where it is used**
+
+* Expert systems
+* Medical diagnosis engines
+* Production rule systems
+* Knowledge-based agents
+
+Your implementation uses:
+
+* Rules of form `{conditions} → conclusion`
+* A loop that keeps inferring until nothing new is added
+
+---
+
+# **2. Pseudocode (Short + Fully Covers Logic)**
+
+### **Forward Chaining Algorithm**
+
+```
+facts = initial facts
+repeat:
+    newFactInferred = false
+    for each rule in rule-base:
+        if all conditions of rule are in facts
+           AND conclusion not in facts:
+               add conclusion to facts
+               print inference
+               newFactInferred = true
+until newFactInferred == false
+return facts
+```
+
+### **Check All Conditions**
+
+```
+allConditionsTrue(rule.conditions, facts):
+    for each condition:
+        if condition not in facts:
+            return false
+    return true
+```
+
+---
+
+# **3. Real-Life Case Studies (Actual Applications, Not Analogies)**
+
+---
+
+## **Case Study 1: Medical Diagnosis Expert System**
+
+In hospital triage systems:
+
+Rules like:
+
+```
+IF fever AND cough → suspect_infection  
+IF suspect_infection AND low_oxygen → admit_patient  
+```
+
+Forward chaining starts with patient symptoms and repeatedly infers new medical states until diagnosis is reached.
+
+---
+
+## **Case Study 2: Fraud Detection in Banking**
+
+Banks use rule-based inference such as:
+
+```
+IF unusual_login AND high_transaction → flagged_account  
+IF flagged_account → freeze_card  
+```
+
+Facts come from transaction logs.
+Forward chaining detects risky behavior in real time.
+
+---
+
+## **Case Study 3: Smart Home Automation**
+
+Smart homes use rules like:
+
+```
+IF motion AND night → turn_on_lights  
+IF window_open AND AC_on → alert_energy_loss  
+```
+
+As sensors generate facts, new actions are inferred automatically.
+
+---
+
+## **Case Study 4: Agriculture Expert System**
+
+Crop advisory systems use:
+
+```
+IF soil_dry AND temperature_high → increase_irrigation  
+IF pest_detected → spray_insecticide  
+```
+
+Farming decisions are automated based on real sensor data.
+
+---
+
+# **4. Test Cases**
+
+### **Test Case 1 (Given in your code)**
+
+Rules:
+
+```
+A & B → C  
+C & D → E  
+E → F  
+```
+
+Initial facts:
+
+```
+A, B, D
+```
+
+Expected inference steps:
+
+```
+Inferred: C
+Inferred: E
+Inferred: F
+Final facts: A B D C E F
+```
+
+---
+
+### **Test Case 2 — No new facts**
+
+Rules:
+
+```
+A → B
+B → C
+```
+
+Initial facts:
+
+```
+X
+```
+
+Expected:
+
+```
+Final facts: X
+(No inference)
+```
+
+---
+
+### **Test Case 3 — Single rule, single condition**
+
+```
+Rule: {Rain} → WetRoad
+Facts: {Rain}
+```
+
+Expected:
+
+```
+Inferred: WetRoad
+Final facts: Rain WetRoad
+```
+
+---
+
+### **Test Case 4 — Cyclic rules**
+
+```
+A → B
+B → A
+```
+
+Initial facts:
+
+```
+A
+```
+
+Expected:
+
+```
+Inferred: B
+Final facts: A B
+(No infinite loop, since duplicates not re-added)
+```
+
+---
+
+### **Test Case 5 — Large chain**
+
+```
+A → B
+B → C
+C → D
+D → E
+```
+
+Initial facts:
+
+```
+A
+```
+
+Expected:
+
+```
+Inferred: B
+Inferred: C
+Inferred: D
+Inferred: E
+```
+
+---
+
+# **5. Optional Viva Q&A**
+
+### **Q1: Forward vs Backward chaining?**
+
+* **Forward**: data-driven, starts from facts, moves toward conclusions
+* **Backward**: goal-driven, starts from goal, works backward to verify
+
+### **Q2: Where is forward chaining preferred?**
+
+When you have **lots of data** and need to infer all possible consequences.
+
+### **Q3: What happens if two rules infer the same fact?**
+
+Only inferred once (duplicate check).
+
+### **Q4: How do we prevent infinite loops?**
+
+By storing facts in a set — repeated facts are ignored.
+
+### **Q5: Is this algorithm complete?**
+
+Yes — if a fact can be inferred through available rules, forward chaining will find it.
+
+### **Q6: Complexity?**
+
+Worst-case exponential if rules are large, but typically linear in number of rules × number of iterations.
+
+### **Q7: Can forward chaining derive contradictory conclusions?**
+
+If rules are inconsistent, yes. Rule engineering must avoid contradictions.
+
+---

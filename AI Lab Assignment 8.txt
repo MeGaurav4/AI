@@ -1,0 +1,304 @@
+# **AI Lab – Assignment 8**
+
+## **Implement Backward Chaining Algorithm**
+
+---
+
+# **1. Theory (Concise, Correct, to-the-point)**
+
+Backward chaining is a **goal-driven inference technique** used in rule-based AI systems.
+Instead of starting from facts, it starts from the **goal** and works backward to see if facts or other rules can justify it.
+
+### **How backward chaining works**
+
+1. Start with a **goal** you want to prove.
+2. Check if it is already a **known fact** → success.
+3. If not, find rules that conclude this goal.
+4. For each such rule:
+
+   * Recursively check if **all conditions** of the rule can be proven.
+5. If any rule’s conditions are all satisfied → goal is true.
+6. If no rule can prove the goal → fail.
+
+This is how systems like Prolog evaluate queries logically.
+
+---
+
+# **2. Pseudocode (Simple & Fully Aligned with Your Program)**
+
+### **Backward Chaining (goal)**
+
+```
+function backwardChaining(goal):
+    if goal in facts:
+        return true
+
+    if no rules conclude goal:
+        return false
+
+    for each rule with conclusion = goal:
+        allTrue = true
+        for each condition in rule:
+            if backwardChaining(condition) == false:
+                allTrue = false
+                break
+
+        if allTrue == true:
+            return true
+
+    return false
+```
+
+### **Main Process**
+
+```
+load rules
+load known facts
+read goal from user
+
+if backwardChaining(goal):
+    print "Goal is TRUE"
+else:
+    print "Goal cannot be proven"
+```
+
+---
+
+# **3. Real-Life Case Studies (Actual usage — not analogies)**
+
+---
+
+## **Case Study 1: Prolog Query Resolution**
+
+Prolog uses **SLD-resolution**, a backward-chaining mechanism.
+Example queries like:
+
+```
+?- ancestor(john, mary).
+```
+
+The Prolog engine works backward through ancestor → parent → parent… checking if facts support the goal.
+
+---
+
+## **Case Study 2: Medical Expert Systems (MYCIN)**
+
+One of the earliest medical diagnosis AIs used backward chaining.
+
+Rules example:
+
+```
+IF infection AND severe THEN antibiotics_needed
+IF fever THEN infection
+```
+
+If goal = “antibiotics_needed”, the system recursively checks “infection”, then “fever”.
+
+---
+
+## **Case Study 3: Access Control / Authorization Systems**
+
+Authorization services verify:
+
+```
+IF user_has_role AND role_has_permission → user_has_permission
+```
+
+If the system needs to verify “user_has_permission”, it backtracks through rules instead of scanning all facts.
+
+---
+
+## **Case Study 4: Helpdesk Troubleshooting Bots**
+
+When diagnosing issues like:
+
+```
+Does the system need repair?
+```
+
+Expert systems work backward through:
+
+* Is power on?
+* Is connectivity available?
+* Is device responding?
+
+Backward chaining is ideal when queries are **goal-specific**.
+
+---
+
+# **4. Test Cases**
+
+---
+
+### **Test Case 1 (Given in your code)**
+
+**Rules**:
+
+```
+C ← A, B
+D ← C
+```
+
+**Facts**:
+
+```
+A, B
+```
+
+**Goal**:
+
+```
+C
+```
+
+Expected:
+
+```
+Goal C is TRUE.
+```
+
+Because:
+
+* C requires A & B → both are known.
+
+---
+
+### **Test Case 2 — Prove D**
+
+Goal:
+
+```
+D
+```
+
+Trace:
+
+* D depends on C
+* C depends on A and B
+* A and B are facts
+
+Expected:
+
+```
+Goal D is TRUE.
+```
+
+---
+
+### **Test Case 3 — Missing Fact**
+
+Facts:
+
+```
+A
+```
+
+Goal:
+
+```
+C
+```
+
+Expected:
+
+```
+Goal C cannot be proven.
+```
+
+(Needs both A and B.)
+
+---
+
+### **Test Case 4 — No Rules for Goal**
+
+Facts:
+
+```
+A, B
+```
+
+Goal:
+
+```
+X
+```
+
+Expected:
+
+```
+Goal X cannot be proven.
+```
+
+(No rule infers X.)
+
+---
+
+### **Test Case 5 — Multi-rule reasoning**
+
+Rules:
+
+```
+G ← E
+G ← F
+E ← A, B
+F ← C, D
+```
+
+Facts:
+
+```
+A, B
+```
+
+Goal:
+
+```
+G
+```
+
+Expected:
+
+```
+Goal G is TRUE.
+```
+
+(Because E is provable through A & B; F isn’t needed.)
+
+---
+
+# **5. Optional Viva Q&A**
+
+### **Q1: Difference between forward and backward chaining?**
+
+* **Forward** starts from **facts → conclusions**.
+* **Backward** starts from **goal → required facts**.
+
+### **Q2: Which is better for large rule bases?**
+
+Backward chaining, because it only searches rules relevant to the goal.
+
+### **Q3: When is forward chaining preferred?**
+
+When you want **all possible conclusions** (data-driven systems).
+
+### **Q4: Can backward chaining lead to infinite recursion?**
+
+Yes, if rules contain cycles. Must add checks for visited goals.
+
+### **Q5: Is backward chaining complete?**
+
+Yes — if a goal is logically derivable from facts, it will find it.
+
+### **Q6: Why is backward chaining used in Prolog?**
+
+Because users submit **queries**, and backward chaining minimizes the search space by only exploring facts relevant to the query.
+
+### **Q7: Time complexity?**
+
+Depends on:
+
+* number of rules for a goal
+* depth of recursion
+  Worst-case can be **exponential**, but very efficient in sparse rule sets.
+
+---

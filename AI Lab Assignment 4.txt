@@ -1,0 +1,255 @@
+# **AI Lab – Assignment 4**
+
+## **Implement A* Algorithm for an Application**
+
+---
+
+# **1. Theory (Straight & Simple)**
+
+### **What is A* Search?**
+
+A* is an **informed search algorithm** used to find the shortest path from a start node to a goal node.
+
+It uses a cost function:
+
+```
+f(n) = g(n) + h(n)
+```
+
+Where:
+
+* **g(n)** = cost from start to current node
+* **h(n)** = heuristic — estimated cost from current node to goal
+* **f(n)** = total estimated cost of a path through n
+
+### **Heuristic Used: Manhattan Distance**
+
+```
+h = |x1 - x2| + |y1 - y2|
+```
+
+Works perfectly for grid worlds with only 4-directional movement.
+
+### **Data Structures Used**
+
+* **Priority Queue (min-heap)** → to always expand the node with lowest `f`
+* **Closed list** → visited nodes
+* **Open list** → nodes yet to explore
+
+### **Application in Your Code**
+
+Pathfinding in a **2D grid** with obstacles (1 = blocked, 0 = free cell).
+The algorithm prints the shortest path coordinates.
+
+---
+
+# **2. Pseudocode (Clear & Exam-Ready)**
+
+### **A* Algorithm**
+
+```
+A*(grid, start, goal):
+    open = priority queue ordered by f
+    closed = empty set
+
+    create start node
+    push start node into open
+
+    while open not empty:
+        current = node with smallest f
+        mark current as visited
+
+        if current is goal:
+            reconstruct and return path
+
+        for each neighbor of current:
+            if neighbor is valid and not visited:
+                g = current.g + 1
+                h = heuristic(neighbor, goal)
+                f = g + h
+                push neighbor into open with parent link
+
+    return "No path"
+```
+
+### **Heuristic**
+
+```
+Manhattan(x1, y1, x2, y2):
+    return |x1 - x2| + |y1 - y2|
+```
+
+### **Valid Cell Check**
+
+```
+isValid(x,y):
+    return inside grid AND grid[x][y] != obstacle
+```
+
+### **Path Reconstruction**
+
+```
+while current != null:
+    push (x,y) to path
+    current = parent
+reverse(path)
+print path
+```
+
+---
+
+# **3. Real-Life Case Study (Not analogy — actual use-cases)**
+
+### **Case Study 1 → Google Maps / Navigation Systems**
+
+A* is used to compute the shortest and fastest route:
+
+* Nodes = road intersections
+* Edges = roads
+* g(n) = distance travelled so far
+* h(n) = estimated distance to destination (usually straight-line)
+
+This speeds up route planning massively.
+
+---
+
+### **Case Study 2 → Robot Navigation (Warehouse Robots)**
+
+Amazon warehouse robots use grid-like movement:
+
+* Obstacles = shelves
+* Grid = warehouse floor
+* Goal = pick-up station
+* A* guarantees collision-free shortest routes.
+
+---
+
+### **Case Study 3 → Game Development (NPC Pathfinding)**
+
+In games (GTA, Assassin’s Creed, Fortnite):
+
+* NPCs use A* to navigate complex environments
+* Must avoid walls, buildings, traps
+* Path must be optimal and dynamic
+
+A* is the industry standard.
+
+---
+
+### **Case Study 4 → Delivery Drones / Autonomous Cars**
+
+Drones use A* variants to:
+
+* Avoid obstacles (buildings, no-fly zones)
+* Maintain optimal path
+* React to new obstacles in real time
+
+---
+
+# **4. Test Cases**
+
+### **Test Case 1 → Provided Grid (Simple)**
+
+Grid (0 = free, 1 = obstacle):
+
+```
+0 0 0 0 0
+1 1 0 1 0
+0 0 0 0 0
+0 1 1 1 0
+0 0 0 0 0
+```
+
+Start: `(0,0)`
+Goal : `(4,4)`
+
+**Expected Output:**
+A valid shortest path (e.g.):
+
+```
+(0,0) (0,1) (0,2) (1,2) (2,2) (2,3) (2,4) (3,4) (4,4)
+```
+
+---
+
+### **Test Case 2 → Blocked Path**
+
+If you modify the grid like this:
+
+```
+0 1 0
+1 1 1
+0 1 0
+```
+
+Start: `(0,0)`
+Goal: `(2,2)`
+
+**Expected:**
+
+```
+No path exists!
+```
+
+---
+
+### **Test Case 3 → Multiple Short Paths**
+
+If there are two shortest paths with equal distance, A* may choose either.
+This shows that A* doesn’t necessarily return *all* shortest paths, just *one* optimal one.
+
+---
+
+### **Test Case 4 → Trivial Case**
+
+Start = Goal
+
+```
+start = (2,2)
+goal  = (2,2)
+```
+
+Expected:
+
+```
+Path found!
+(2,2)
+```
+
+---
+
+# **5. Optional Viva Q&A (Useful, Direct)**
+
+### **Q1: Why is A* better than BFS?**
+
+Because A* uses a heuristic and prioritizes promising paths, making it faster and more optimal in large spaces.
+
+### **Q2: What makes a heuristic admissible?**
+
+It never overestimates the actual distance.
+
+### **Q3: Is Manhattan distance admissible?**
+
+Yes — for grid movement without diagonals.
+
+### **Q4: What is the time complexity of A*?**
+
+Worst case: **O(V + E)** but practically much faster due to pruning.
+
+### **Q5: Why use a priority queue?**
+
+To always expand the node with the lowest estimated total cost (`f`).
+
+### **Q6: What happens if the heuristic is zero?**
+
+A* becomes **Dijkstra’s Algorithm**.
+
+### **Q7: What happens if the heuristic is extremely large?**
+
+A* becomes **Greedy Best-First Search** (suboptimal).
+
+### **Q8: Can A* handle dynamic obstacles?**
+
+Not directly — but variants like **D*-Lite** can.
+
+---

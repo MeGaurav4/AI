@@ -1,0 +1,270 @@
+# **AI Lab – Assignment 5**
+
+## **Implement Minimax Algorithm for Game Playing (Tic-Tac-Toe)**
+
+---
+
+# **1. Theory (Short, Precise)**
+
+### **Minimax Algorithm**
+
+A decision-making algorithm used in **two-player, zero-sum, perfect-information games**.
+
+* One player is the **Maximizer (AI)** → tries to achieve the highest score
+* Other is the **Minimizer (Human)** → tries to achieve the lowest score
+
+Minimax explores all possible moves, simulates the opponent, and chooses the optimal path assuming both play **perfectly**.
+
+### **Why Tic-Tac-Toe?**
+
+* Small search space → Minimax can explore the full game tree
+* AI becomes **unbeatable** (but can be forced into a draw)
+
+### **Evaluation Function Used**
+
+Returns:
+
+* `+10` → AI (X) wins
+* `-10` → Human (O) wins
+* `0` → Game not decided / Draw state
+
+### **Depth Consideration**
+
+The algorithm subtracts or adds `depth` so:
+
+* AI prefers **quicker wins**
+* Human prefers **slower losses**
+
+---
+
+# **2. Pseudocode (Exact Logic as Your Program)**
+
+### **Evaluate Board**
+
+```
+evaluate(board):
+    if AI wins: return +10
+    if HUMAN wins: return -10
+    else return 0
+```
+
+### **Check if Moves Left**
+
+```
+isMovesLeft(board):
+    return true if any cell == '_'
+```
+
+### **Minimax Algorithm**
+
+```
+minimax(board, depth, isMaximizingPlayer):
+
+    score = evaluate(board)
+
+    if score == 10: return score - depth
+    if score == -10: return score + depth
+    if no moves left: return 0
+
+    if isMaximizingPlayer:   // AI
+        best = -∞
+        for each empty cell:
+            place AI mark
+            best = max(best, minimax(board, depth+1, false))
+            undo move
+        return best
+
+    else:                    // Human
+        best = +∞
+        for each empty cell:
+            place HUMAN mark
+            best = min(best, minimax(board, depth+1, true))
+            undo move
+        return best
+```
+
+### **Find Best Move**
+
+```
+findBestMove(board):
+    bestVal = -∞
+    for each empty cell:
+        place AI mark
+        value = minimax(board, 0, false)
+        undo move
+        if value > bestVal:
+            update best move
+    return best move
+```
+
+---
+
+# **3. Real-Life Case Studies (True, Practical Examples)**
+
+### **Case Study 1: Chess Engines (Stockfish, AlphaZero)**
+
+Stockfish’s core layer uses minimax-like search with alpha-beta pruning and heuristics.
+Millions of positions evaluated per second.
+Your Tic-Tac-Toe version is a tiny, pure version of what chess engines do on a giant scale.
+
+---
+
+### **Case Study 2: Turn-Based Strategy Games (Civilization, XCOM)**
+
+Enemy AI uses minimax or variants for:
+
+* Optimal troop placement
+* Attack/defense decisions
+* Risk analysis
+  This gives the “smart opponent” feel.
+
+---
+
+### **Case Study 3: Board Games (Checkers, Connect-4)**
+
+Minimax is used to:
+
+* Prevent opponent victories
+* Set traps
+* Guarantee at least a draw
+
+Connect-4 was solved entirely using minimax + heuristics.
+
+---
+
+### **Case Study 4: Competitive Robotics (RoboCup Soccer AI)**
+
+Robots predict opponent moves using minimax-like reasoning:
+
+* Block strategy
+* Shoot vs pass
+* Intercept paths
+  Perfect-information scenarios → minimax fits well.
+
+---
+
+# **4. Test Cases**
+
+### **Test Case 1 — Human tries center**
+
+Board after human plays center:
+
+```
+_ _ _
+_ O _
+_ _ _
+```
+
+AI should pick a corner (optimal play), e.g., `(0,0)`.
+
+**Expected AI Move:**
+
+```
+AI chose position: (0, 0)
+```
+
+---
+
+### **Test Case 2 — Human threatens a win**
+
+Scenario:
+
+```
+X O _
+_ O _
+X _ _
+```
+
+Human threatens by forming two O’s in the middle column.
+
+**Expected AI Response:**
+AI must block the human immediately.
+
+---
+
+### **Test Case 3 — Forced Draw**
+
+If both players play perfectly from the start:
+
+```
+AI vs Human
+Outcome: Draw
+```
+
+Your minimax ensures AI never loses.
+
+---
+
+### **Test Case 4 — Human makes mistake**
+
+If Human plays:
+
+```
+O _ _
+_ _ _
+_ _ _
+```
+
+AI should force a win.
+
+---
+
+### **Test Case 5 — Endgame Check**
+
+When no moves left and no winner → return draw.
+
+Input board:
+
+```
+X O X
+O X O
+O X O
+```
+
+Expected:
+
+```
+It's a Draw!
+```
+
+---
+
+# **5. Optional Viva Q&A**
+
+### **Q1: Why does Minimax assume the opponent plays optimally?**
+
+Because the goal is to guarantee the best possible outcome even against a perfect opponent.
+
+### **Q2: Time complexity of Minimax in Tic-Tac-Toe?**
+
+At most **9! = 362,880** states — small enough for brute force.
+
+### **Q3: Why use depth in scoring?**
+
+To prioritize:
+
+* Faster wins
+* Slower losses
+
+### **Q4: Can Minimax handle large games like Chess?**
+
+Not directly — needs:
+
+* Alpha-beta pruning
+* Heuristics
+* Iterative deepening
+* Transposition tables
+
+### **Q5: Why is AI unbeatable in Tic-Tac-Toe with Minimax?**
+
+The entire game tree is explored → perfect strategy.
+
+### **Q6: Difference between Minimax and Alpha-Beta?**
+
+Alpha-Beta is an **optimized Minimax** that prunes branches.
+
+### **Q7: Is this a deterministic or stochastic game?**
+
+Deterministic — no randomness in transitions.
+
+---

@@ -1,0 +1,294 @@
+# **AI Lab – Assignment 6**
+
+## **Implement Basic Search Strategies – 8 Queens Problem**
+
+*(Backtracking, Brute Force, Branch & Bound)*
+
+---
+
+# **1. Theory (Short, Clean, Exam-Perfect)**
+
+The **8-Queens Problem** asks:
+Place **8 queens** on an **8×8 chessboard** such that:
+
+* No two queens share the same **row**
+* No two queens share the same **column**
+* No two queens attack each other diagonally
+
+It’s a classical **constraint satisfaction + search** problem.
+
+This assignment implements **three strategies**:
+
+---
+
+## **1. Backtracking (Most Efficient Practical Method)**
+
+* Place queens **row by row**.
+* For each row, try all columns.
+* If unsafe → backtrack immediately.
+* Uses pruning early → very efficient.
+
+**Time complexity:** O(N!) worst-case, but pruning makes it fast.
+
+---
+
+## **2. Brute Force (Try ALL Configurations)**
+
+* Generate all possible placements (8⁸ combinations).
+* Check each for validity.
+* Extremely slow → used only for demonstration.
+
+**Time complexity:** O(Nⁿ), insane for large N.
+
+---
+
+## **3. Branch and Bound (Improved Backtracking)**
+
+* Like backtracking, but uses **bounds** to prune impossible branches early.
+* Can generate **all** solutions.
+* Efficient for enumerating multiple valid layouts.
+
+---
+
+# **2. Pseudocode (Compact & Clear)**
+
+---
+
+### **isSafe(row, col)**
+
+Check if placing a queen at (row, col) is safe.
+
+```
+for each previous row i:
+    if board[i] == col: return false     // same column
+    if abs(board[i] - col) == abs(i - row): return false  // diagonal
+return true
+```
+
+---
+
+## **Backtracking Strategy**
+
+```
+solveBacktracking(row):
+    if row == N:
+        print solution
+        return true
+
+    for col in 0 to N-1:
+        if isSafe(row, col):
+            board[row] = col
+            if solveBacktracking(row+1): return true
+            board[row] = -1   // backtrack
+    return false
+```
+
+---
+
+## **Brute Force Strategy**
+
+```
+generatePermutation(index):
+    if index == N:
+        if isValidConfiguration(): print solution
+        return
+
+    for col in 0 to N-1:
+        board[index] = col
+        generatePermutation(index+1)
+```
+
+Validity check:
+
+```
+for each pair (i, j):
+    if same column or same diagonal: return false
+return true
+```
+
+---
+
+## **Branch & Bound Strategy**
+
+```
+solveBB(row):
+    if row == N:
+        count += 1
+        print first solution
+        return
+
+    for col in 0 to N-1:
+        if isSafe(row, col):   // bounding eliminates branches early
+            board[row] = col
+            solveBB(row+1)
+            board[row] = -1
+```
+
+---
+
+# **3. Real-Life Case Studies (Not analogies – real applications)**
+
+---
+
+## **Case Study 1: Task Scheduling in Cloud Systems**
+
+Cloud schedulers must assign tasks to processors such that:
+
+* No two tasks conflict (like queens not attacking)
+* Resource constraints satisfied
+* Placement optimized
+
+The N-Queens constraints mirror real CPU/GPU scheduling constraints.
+
+---
+
+## **Case Study 2: Traffic Signal Optimization**
+
+Designing signal timings at intersections:
+
+* Each intersection = a queen
+* No two intersections should conflict with traffic flow
+* Constraints resemble row/column/diagonal conflicts
+
+Backtracking + constraint evaluation helps generate optimal schedules.
+
+---
+
+## **Case Study 3: Circuit Board Component Placement**
+
+Electronic circuits must place components:
+
+* Without causing signal interference (diagonal conflict)
+* Without overlapping placement (row/column conflict)
+
+Search strategies like Branch-and-Bound help in early pruning.
+
+---
+
+## **Case Study 4: University Timetabling**
+
+Timetable generation prevents:
+
+* Same professor at two places (column conflict)
+* Same classroom double allocation (row conflict)
+* Student group clashes (diagonal-equivalent constraint)
+
+Constraint satisfaction identical to N-Queens rules.
+
+---
+
+# **4. Test Cases**
+
+---
+
+### **Test Case 1 — Backtracking Solution**
+
+Input:
+
+```
+Choice = 1
+```
+
+Expected Output:
+
+* A valid 8-queen layout printed
+* “Solution found using Backtracking!”
+
+Example (one possible):
+
+```
+. Q . . . . . .
+. . . . Q . . .
+...
+```
+
+---
+
+### **Test Case 2 — Brute Force**
+
+Input:
+
+```
+Choice = 2
+```
+
+Expected Output:
+
+* Warning: slow
+* Eventually prints a valid board
+* “Solution found using Brute Force!”
+
+---
+
+### **Test Case 3 — Branch and Bound**
+
+Input:
+
+```
+Choice = 3
+```
+
+Expected Output:
+
+* Prints the first solution
+* Total solutions count = **92** for 8-queens
+
+---
+
+### **Test Case 4 — Run All**
+
+Input:
+
+```
+Choice = 4
+```
+
+Expected:
+
+* All strategies run one by one
+* Backtracking prints one solution
+* Brute force prints one solution
+* Branch-and-bound prints first solution + count = 92
+
+---
+
+# **5. Optional Viva Q&A**
+
+---
+
+### **Q1: What type of problem is the N-Queens problem?**
+
+Constraint Satisfaction Problem (CSP).
+
+### **Q2: Why is backtracking effective here?**
+
+It prunes unsafe placements early, reducing the search dramatically.
+
+### **Q3: Why is brute force impractical?**
+
+It tries all 16 million configurations for 8 queens → extremely slow.
+
+### **Q4: How does Branch and Bound differ from Backtracking?**
+
+It uses bounds to prune branches earlier and can find **all** solutions efficiently.
+
+### **Q5: How many total solutions exist for 8-queens?**
+
+92.
+
+### **Q6: What type of conflicts must be avoided?**
+
+* Same column
+* Same major diagonal
+* Same minor diagonal
+
+### **Q7: Time complexity of backtracking solution?**
+
+Worst-case **O(N!)**, but much faster in practice due to pruning.
+
+### **Q8: Is N-Queens NP-hard?**
+
+Decision version for general N is **NP-Complete**.
+
+---
+

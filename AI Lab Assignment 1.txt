@@ -1,0 +1,258 @@
+# **AI Lab – Assignment 1**
+
+## **Implement DFS & BFS for the 8-Puzzle Problem**
+
+*(Using strictly your code)*
+
+---
+
+# **1. Theory (Short & Simple)**
+
+### **8-Puzzle Problem**
+
+* A 3×3 board containing tiles numbered **1–8** and one blank tile (**0**).
+* Goal: Move tiles by sliding the blank to reach the **goal configuration**
+  → **1 2 3 / 4 5 6 / 7 8 0**
+
+### **State Representation**
+
+* Represented as a vector of size 9 → `{1,2,3,4,5,6,7,8,0}`
+* Blank (0) can move **up, down, left, right**.
+
+---
+
+## **Breadth-First Search (BFS)**
+
+* **Explores level by level**
+* Always finds the **shortest path**
+* Uses a **queue**
+* Good for optimality, slow for large state spaces
+
+---
+
+## **Depth-First Search (DFS)**
+
+* **Explores deep first**
+* Uses a **stack**
+* Fast but can go deep into useless paths
+* Not guaranteed to find the shortest path
+
+---
+
+# **2. Pseudocode**
+
+### **BFS (Pseudo)**
+
+```
+function BFS(start):
+    create queue Q
+    create visited set
+    push start to Q
+    mark start visited
+
+    while Q not empty:
+        state = pop front
+        if state == goal: return success
+        for each next_state in successors(state):
+            if next_state not visited:
+                mark visited
+                push next_state to Q
+    return failure
+```
+
+### **DFS (Pseudo)**
+
+```
+function DFS(start):
+    create stack S
+    create visited set
+    push start to S
+    mark start visited
+
+    while S not empty:
+        state = pop top
+        if state == goal: return success
+        for each next_state in successors(state):
+            if next_state not visited:
+                mark visited
+                push next_state to S
+    return failure
+```
+
+---
+
+# **3. Real-Life Analogy**
+
+### **BFS → Like checking floors of a building one by one**
+
+You search every room on Floor 1, then Floor 2, and so on. No floor is skipped.
+
+### **DFS → Like diving straight down a staircase**
+
+You keep going downward until you hit the basement, then backtrack.
+
+---
+
+# **4. Your Exact Code (Same, Cleanly Formatted)**
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <unordered_set>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+const vector<int> goal_state = {1,2,3,4,5,6,7,8,0};
+
+string stateToString(const vector<int>& state) {
+    string s;
+    for (int x : state) s += to_string(x);
+    return s;
+}
+
+vector<vector<int>> getSuccessors(const vector<int>& state) {
+    vector<vector<int>> successors;
+    int zero_pos = find(state.begin(), state.end(), 0) - state.begin();
+    int row = zero_pos / 3;
+    int col = zero_pos % 3;
+
+    vector<pair<int,int>> directions = {{-1,0},{1,0},{0,-1},{0,1}}; // up,down,left,right
+
+    for (auto& d : directions) {
+        int new_row = row + d.first;
+        int new_col = col + d.second;
+        if (new_row >= 0 && new_row < 3 && new_col >=0 && new_col < 3) {
+            int new_pos = new_row * 3 + new_col;
+            vector<int> new_state = state;
+            swap(new_state[zero_pos], new_state[new_pos]);
+            successors.push_back(new_state);
+        }
+    }
+    return successors;
+}
+
+bool bfs(const vector<int>& start) {
+    queue<vector<int>> q;
+    unordered_set<string> visited;
+
+    q.push(start);
+    visited.insert(stateToString(start));
+
+    while (!q.empty()) {
+        vector<int> state = q.front(); q.pop();
+
+        if (state == goal_state) {
+            cout << "Goal reached by BFS!\n";
+            return true;
+        }
+
+        for (auto& next_state : getSuccessors(state)) {
+            string s = stateToString(next_state);
+            if (visited.find(s) == visited.end()) {
+                visited.insert(s);
+                q.push(next_state);
+            }
+        }
+    }
+    return false;
+}
+
+bool dfs(const vector<int>& start) {
+    stack<vector<int>> st;
+    unordered_set<string> visited;
+
+    st.push(start);
+    visited.insert(stateToString(start));
+
+    while (!st.empty()) {
+        vector<int> state = st.top(); st.pop();
+
+        if (state == goal_state) {
+            cout << "Goal reached by DFS!\n";
+            return true;
+        }
+
+        for (auto& next_state : getSuccessors(state)) {
+            string s = stateToString(next_state);
+            if (visited.find(s) == visited.end()) {
+                visited.insert(s);
+                st.push(next_state);
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    vector<int> start_state = {1,2,3,4,5,6,0,7,8}; // Example start
+
+    cout << "Running BFS...\n";
+    bfs(start_state);
+
+    cout << "Running DFS...\n";
+    dfs(start_state);
+
+    return 0;
+}
+```
+
+---
+
+# **5. Test Cases**
+
+### **Test Case 1**
+
+**Input:** `{1,2,3,4,5,6,0,7,8}`
+**Expected:**
+
+* BFS: Goal reached
+* DFS: Goal reached
+  (Both can solve it since it's close to the goal)
+
+### **Test Case 2**
+
+**Input:** `{1,2,3,4,5,6,7,0,8}`
+**Expected:**
+
+* BFS: Goal reached
+* DFS: Goal reached
+
+### **Test Case 3 (Harder)**
+
+**Input:** `{1,2,3,4,0,6,7,5,8}`
+**Expected:**
+
+* BFS: Takes more time but solves
+* DFS: Might get stuck deeper but usually solves
+
+---
+
+# **6. Optional Viva Q&A**
+
+### **Q1: Why do we use a visited set?**
+
+To avoid infinite loops and repeated states.
+
+### **Q2: Which algorithm guarantees the shortest solution?**
+
+BFS.
+
+### **Q3: Which is faster in practice?**
+
+DFS, but not reliable for optimality.
+
+### **Q4: What is branching factor here?**
+
+Each state can have **2–4 successors** depending on blank tile position.
+
+### **Q5: What is heuristic used here?**
+
+None. BFS/DFS are **uninformed search** strategies.
+
+### **Q6: Can DFS get stuck?**
+
+Yes — it may go down long, useless branches.
