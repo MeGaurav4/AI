@@ -1,4 +1,4 @@
-# **AI LAB – Assignment 9**
+# **AI Lab – Assignment 9**
 
 ## **Create a Chatbot Application for Any Real-World Scenario**
 
