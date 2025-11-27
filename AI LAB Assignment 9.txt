@@ -1,0 +1,146 @@
+# **AI LAB – Assignment 9**
+
+## **Create a Chatbot Application for Any Real-World Scenario**
+
+Let’s build a **simple Rule-Based Restaurant Assistant Chatbot** in C++.
+It answers basic customer queries about menu items, timings, and reservations.
+
+---
+
+# **1. Theory (Short & Crisp)**
+
+A **chatbot** is a conversational software agent that interacts with users using predefined rules, patterns, or AI models.
+
+This assignment uses a **rule-based chatbot**:
+
+* Pattern matching on keywords
+* Responds with predefined answers
+* No ML needed
+* Easy to implement in C++
+
+Real-world chatbots use:
+
+* NLP
+* Knowledge graphs
+* Intent classification
+* Dialogue state tracking
+
+But for lab purposes, a rule-based system is perfect.
+
+---
+
+# **2. Pseudocode**
+
+```
+loop:
+    read user input
+    if input contains "menu": print menu info
+    else if input contains "time": print opening hours
+    else if input contains "reserve": print reservation steps
+    else if input contains "bye": exit
+    else print "I didn't understand"
+```
+
+---
+
+# **3. Real-Life Case Study (Actual Use)**
+
+### **Restaurant Customer Support Chatbot**
+
+Used in:
+
+* Zomato
+* Swiggy
+* Domino’s
+* McDonald’s kiosks
+
+It answers questions like:
+
+* “What’s on the menu?”
+* “Are you open now?”
+* “How do I book a table?”
+* “Do you deliver to my location?”
+
+Your implementation mimics an early stage version of such a chatbot.
+
+---
+
+# **5. Test Cases**
+
+### **Input**
+
+```
+What is your menu?
+```
+
+**Output**
+
+```
+We serve pizza, pasta, burgers, fries, and cold drinks.
+```
+
+### **Input**
+
+```
+What are your timings?
+```
+
+**Output**
+
+```
+We are open every day from 10 AM to 11 PM.
+```
+
+### **Input**
+
+```
+How can I reserve a table?
+```
+
+**Output**
+
+```
+You can reserve a table by calling 9876543210.
+```
+
+### **Input**
+
+```
+Bye
+```
+
+**Output**
+
+```
+Goodbye! Have a great day!
+```
+
+---
+
+# **6. Viva Q&A**
+
+### **Q1: What type of chatbot is this?**
+
+A rule-based chatbot using simple pattern matching.
+
+### **Q2: How does it understand queries?**
+
+By converting input to lowercase and checking for keywords.
+
+### **Q3: Limitations of rule-based chatbots?**
+
+* Cannot understand complex sentences
+* No context memory
+* No learning capability
+
+### **Q4: Where are chatbots used in real life?**
+
+Customer support, restaurants, banks, airlines, shopping apps, IT helpdesks.
+
+### **Q5: How to make it smarter?**
+
+* Add NLP (spaCy, NLTK)
+* Add intent classification
+* Add ML-based natural language understanding
+
+---
